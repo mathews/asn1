@@ -6,6 +6,7 @@ package asn1
 
 import (
 	"bytes"
+	"encoding/asn1"
 	"errors"
 	"fmt"
 	"math/big"
@@ -472,7 +473,7 @@ func makeBody(value reflect.Value, params fieldParameters) (e encoder, err error
 	case bitStringType:
 		return bitStringEncoder(value.Interface().(BitString)), nil
 	case objectIdentifierType:
-		return makeObjectIdentifier(value.Interface().(ObjectIdentifier))
+		return makeObjectIdentifier(value.Interface().(asn1.ObjectIdentifier))
 	case bigIntType:
 		return makeBigInt(value.Interface().(*big.Int))
 	}

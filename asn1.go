@@ -52,7 +52,7 @@ import (
 
 func parseBool(bytes []byte) (ret bool, err error) {
 	if len(bytes) != 1 {
-		err = asn1.asn1.SyntaxError{"invalid boolean"}
+		err = asn1.SyntaxError{"invalid boolean"}
 		return
 	}
 
@@ -65,7 +65,7 @@ func parseBool(bytes []byte) (ret bool, err error) {
 	case 0xff:
 		ret = true
 	default:
-		err = asn1.asn1.SyntaxError{"invalid boolean"}
+		err = asn1.SyntaxError{"invalid boolean"}
 	}
 
 	return
@@ -653,10 +653,17 @@ func parseSequenceOf(bytes []byte, sliceType reflect.Type, elemType reflect.Type
 }
 
 var (
+<<<<<<< HEAD
 	bitStringType        = reflect.TypeOf(asn1.BitString{})
 	objectIdentifierType = reflect.TypeOf(asn1.ObjectIdentifier{})
 	enumeratedType       = reflect.TypeOf(asn1.Enumerated(0))
 	flagType             = reflect.TypeOf(asn1.Flag(false))
+=======
+	bitStringType        = reflect.TypeOf(BitString{})
+	objectIdentifierType = reflect.TypeOf(asn1.ObjectIdentifier{})
+	enumeratedType       = reflect.TypeOf(Enumerated(0))
+	flagType             = reflect.TypeOf(Flag(false))
+>>>>>>> 880634f7ff7d616ba73a01e03f69948ca6c34ad0
 	timeType             = reflect.TypeOf(time.Time{})
 	rawValueType         = reflect.TypeOf(asn1.RawValue{})
 	rawContentsType      = reflect.TypeOf(asn1.RawContent(nil))
