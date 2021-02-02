@@ -20,12 +20,12 @@ package asn1
 // everything by any means.
 
 import (
+	"encoding/asn1"
 	"errors"
 	"fmt"
 	"math"
 	"math/big"
 	"reflect"
-	"strconv"
 	"time"
 	"unicode/utf16"
 	"unicode/utf8"
@@ -219,39 +219,39 @@ var NullBytes = []byte{TagNull, 0}
 // OBJECT IDENTIFIER
 
 // An ObjectIdentifier represents an ASN.1 OBJECT IDENTIFIER.
-type ObjectIdentifier []int
+// type ObjectIdentifier []int
 
 // Equal reports whether oi and other represent the same identifier.
-func (oi ObjectIdentifier) Equal(other ObjectIdentifier) bool {
-	if len(oi) != len(other) {
-		return false
-	}
-	for i := 0; i < len(oi); i++ {
-		if oi[i] != other[i] {
-			return false
-		}
-	}
+// func (oi ObjectIdentifier) Equal(other ObjectIdentifier) bool {
+// 	if len(oi) != len(other) {
+// 		return false
+// 	}
+// 	for i := 0; i < len(oi); i++ {
+// 		if oi[i] != other[i] {
+// 			return false
+// 		}
+// 	}
 
-	return true
-}
+// 	return true
+// }
 
-func (oi ObjectIdentifier) String() string {
-	var s string
+// func (oi ObjectIdentifier) String() string {
+// 	var s string
 
-	for i, v := range oi {
-		if i > 0 {
-			s += "."
-		}
-		s += strconv.Itoa(v)
-	}
+// 	for i, v := range oi {
+// 		if i > 0 {
+// 			s += "."
+// 		}
+// 		s += strconv.Itoa(v)
+// 	}
 
-	return s
-}
+// 	return s
+// }
 
 // parseObjectIdentifier parses an OBJECT IDENTIFIER from the given bytes and
 // returns it. An object identifier is a sequence of variable length integers
 // that are assigned in a hierarchy.
-func parseObjectIdentifier(bytes []byte) (s ObjectIdentifier, err error) {
+func parseObjectIdentifier(bytes []byte) (s asn1.ObjectIdentifier, err error) {
 	if len(bytes) == 0 {
 		err = SyntaxError{"zero length OBJECT IDENTIFIER"}
 		return
@@ -654,7 +654,7 @@ func parseSequenceOf(bytes []byte, sliceType reflect.Type, elemType reflect.Type
 
 var (
 	bitStringType        = reflect.TypeOf(BitString{})
-	objectIdentifierType = reflect.TypeOf(ObjectIdentifier{})
+	objectIdentifierType = reflect.TypeOf(asn1.ObjectIdentifier{})
 	enumeratedType       = reflect.TypeOf(Enumerated(0))
 	flagType             = reflect.TypeOf(Flag(false))
 	timeType             = reflect.TypeOf(time.Time{})
