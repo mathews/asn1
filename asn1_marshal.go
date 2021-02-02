@@ -1,6 +1,7 @@
 package asn1
 
 import (
+	"encoding/asn1"
 	"errors"
 	"math/big"
 )
@@ -134,7 +135,7 @@ func getInt(n, signum int, mag []int) int {
 	return ret
 }
 
-func Min(x, y int) int {
+func min(x, y int) int {
 	if x < y {
 		return x
 	}
@@ -174,7 +175,7 @@ func makePositive(a []byte, off, length int) []int {
 	for i := intLength - 1; i >= 0; i-- {
 		result[i] = int(a[b]) & 0xff
 		b = b - 1
-		numBytesToTransfer := Min(3, b-keep+1)
+		numBytesToTransfer := min(3, b-keep+1)
 		if numBytesToTransfer < 0 {
 			numBytesToTransfer = 0
 		}
@@ -217,7 +218,7 @@ func stripLeadingZeroBytes(a []byte, off, len int) []int {
 		result[i] = int(a[b]) & 0xff
 		b = b - 1
 		bytesRemaining := b - keep + 1
-		bytesToTransfer := Min(3, bytesRemaining)
+		bytesToTransfer := min(3, bytesRemaining)
 		for j := 8; j <= (bytesToTransfer << 3); j += 8 {
 			result[i] = result[i] | ((int(a[b]) & 0xff) << j)
 			b = b - 1
@@ -239,7 +240,7 @@ const LONG_MASK int = 0xffffffff
 
 func makeBigInt(n *big.Int) (encoder, error) {
 	if n == nil {
-		return nil, StructuralError{"empty integer"}
+		return nil, asn1.StructuralError{"empty integer"}
 	}
 	var mag []int
 	var signum int
