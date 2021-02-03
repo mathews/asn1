@@ -4,7 +4,19 @@ import (
 	"encoding/asn1"
 	"errors"
 	"math/big"
+
+	"go.uber.org/zap"
 )
+
+//Logger SugaredLogger
+var Logger *zap.SugaredLogger
+
+func init() {
+	// logger, _ := zap.NewProduction()
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync() // flushes buffer, if any
+	Logger = logger.Sugar()
+}
 
 func numberOfLeadingZeros(i int) int {
 	// HD, Count leading 0's
@@ -247,10 +259,13 @@ func makeBigInt(n *big.Int) (encoder, error) {
 	//TODO init mag
 	val := n.Bytes()
 
-	if val[0] < 0 {
+	// if val[0] < 0 {
+	if n.Sign() < 0 {
+		Logger.Debugf("Bigint %x is negative", n)
 		mag = makePositive(val, 0, len(val))
 		signum = -1
 	} else {
+		Logger.Debugf("Bigint %x is positive", n)
 		mag = stripLeadingZeroBytes(val, 0, len(val))
 		if len(mag) == 0 {
 			signum = 0
@@ -258,7 +273,9 @@ func makeBigInt(n *big.Int) (encoder, error) {
 
 		signum = 1
 	}
+	Logger.Debugf("generated mag byte array %x", mag)
 	if len(mag) >= MAX_MAG_LENGTH {
+		Logger.Warnf("Bigint %x exceeds MAX_MAG_LENGTH", n)
 		err := checkRange(mag)
 		if err != nil {
 			return nil, err
@@ -268,7 +285,7 @@ func makeBigInt(n *big.Int) (encoder, error) {
 	byteLen := bitLength(signum, mag)/8 + 1 //int
 	byteArray := make([]byte, byteLen)      //byte[]
 
-	for i, bytesCopied, nextInt, intIndex := byteLen-1, 40, 0, 0; i >= 0; i-- {
+	for i, bytesCopied, nextInt, intIndex := byteLen-1, 4, 0, 0; i >= 0; i-- {
 		if bytesCopied == 4 {
 
 			nextInt = getInt(intIndex, signum, mag)
@@ -280,6 +297,6 @@ func makeBigInt(n *big.Int) (encoder, error) {
 		}
 		byteArray[i] = byte(nextInt)
 	}
-
+	Logger.Debugf("encoded byte array %x", byteArray)
 	return bytesEncoder(byteArray), nil
 }
