@@ -302,5 +302,5 @@ func makeBigInt(n *big.Int) (encoder, error) {
 		byteArray[i] = byte(nextInt)
 	}
 	Logger.Debugf("encoded byte array %x", byteArray)
-	return bytesEncoder(byteArray), nil
+	return bytesEncoder(byteArray[1:]), nil
 }
