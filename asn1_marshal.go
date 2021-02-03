@@ -267,11 +267,12 @@ func makeBigInt(n *big.Int) (encoder, error) {
 	} else {
 		Logger.Debugf("Bigint %x is positive", n)
 		mag = stripLeadingZeroBytes(val, 0, len(val))
+
+		signum = 1
+
 		if len(mag) == 0 {
 			signum = 0
 		}
-
-		signum = 1
 	}
 	Logger.Debugf("generated mag byte array %x", mag)
 	if len(mag) >= MAX_MAG_LENGTH {
