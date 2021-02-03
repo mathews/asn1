@@ -254,6 +254,9 @@ func makeBigInt(n *big.Int) (encoder, error) {
 	if n == nil {
 		return nil, asn1.StructuralError{"empty integer"}
 	}
+
+	Logger.Debugf("Bigint value %d", n)
+
 	var mag []int
 	var signum int
 	//TODO init mag
