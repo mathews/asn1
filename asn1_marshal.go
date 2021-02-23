@@ -3,6 +3,7 @@ package asn1
 import (
 	"encoding/asn1"
 	"errors"
+	"log"
 	"math/big"
 
 	"go.uber.org/zap"
@@ -303,4 +304,37 @@ func makeBigInt(n *big.Int) (encoder, error) {
 	}
 	Logger.Debugf("encoded byte array %x", byteArray)
 	return bytesEncoder(byteArray), nil
+}
+
+// parseBigInt treats the given bytes as a big-endian, signed integer and returns
+// the result.
+func parseBigInt(bytes []byte) (*big.Int, error) {
+	log.Printf("UnmarshalBigInt %x\n", bytes)
+	if err := checkInteger(bytes); err != nil {
+		ret := new(big.Int)
+		ret.SetBytes(bytes)
+		return ret, nil
+	}
+	ret := new(big.Int)
+	if len(bytes) > 0 {
+		if len(bytes) > 32 && bytes[0] == 1 {
+			ret.SetBytes(bytes[1:])
+			ret = ret.Neg(ret)
+
+		} else if bytes[0]&0x80 != 0 {
+			// This is a negative number.
+			notBytes := make([]byte, len(bytes))
+			for i := range notBytes {
+				notBytes[i] = ^bytes[i]
+			}
+			ret.SetBytes(notBytes)
+			ret.Add(ret, bigOne)
+			ret = ret.Neg(ret)
+			log.Printf("Unmarshaled negative BigInt as %d\n", ret)
+		} else {
+			ret.SetBytes(bytes)
+		}
+	}
+	log.Printf("Unmarshaled BigInt as %d\n", ret)
+	return ret, nil
 }

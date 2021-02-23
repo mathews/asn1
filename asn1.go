@@ -131,25 +131,25 @@ var bigOne = big.NewInt(1)
 
 // parseBigInt treats the given bytes as a big-endian, signed integer and returns
 // the result.
-func parseBigInt(bytes []byte) (*big.Int, error) {
-	if err := checkInteger(bytes); err != nil {
-		return nil, err
-	}
-	ret := new(big.Int)
-	if len(bytes) > 0 && bytes[0]&0x80 == 0x80 {
-		// This is a negative number.
-		notBytes := make([]byte, len(bytes))
-		for i := range notBytes {
-			notBytes[i] = ^bytes[i]
-		}
-		ret.SetBytes(notBytes)
-		ret.Add(ret, bigOne)
-		ret.Neg(ret)
-		return ret, nil
-	}
-	ret.SetBytes(bytes)
-	return ret, nil
-}
+// func parseBigInt(bytes []byte) (*big.Int, error) {
+// 	if err := checkInteger(bytes); err != nil {
+// 		return nil, err
+// 	}
+// 	ret := new(big.Int)
+// 	if len(bytes) > 0 && bytes[0]&0x80 == 0x80 {
+// 		// This is a negative number.
+// 		notBytes := make([]byte, len(bytes))
+// 		for i := range notBytes {
+// 			notBytes[i] = ^bytes[i]
+// 		}
+// 		ret.SetBytes(notBytes)
+// 		ret.Add(ret, bigOne)
+// 		ret.Neg(ret)
+// 		return ret, nil
+// 	}
+// 	ret.SetBytes(bytes)
+// 	return ret, nil
+// }
 
 // BIT STRING
 
