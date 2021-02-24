@@ -321,7 +321,7 @@ func parseBigInt(bytes []byte) (*big.Int, error) {
 			ret.SetBytes(bytes[1:])
 			ret = ret.Neg(ret)
 
-		} else if bytes[0]&0x80 != 0 {
+		} else if bytes[0]&0x80 == 0x80 {
 			// This is a negative number.
 			notBytes := make([]byte, len(bytes))
 			for i := range notBytes {
